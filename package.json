@@ -5,7 +5,10 @@
         "start": "nodemon ./src/server/index.ts",
         "test": "jest",
         "build": "webpack --mode=production --node-env=production",
-        "watch": "webpack --watch"
+        "watch": "webpack --watch",
+        "e2e": "C:\\Users\\User\\node_modules\\.bin\\hermione",
+        "e2e:first": "C:\\Users\\User\\node_modules\\.bin\\hermione --update-refs",
+        "e2e:gui": "C:\\Users\\User\\node_modules\\.bin\\hermione gui"
     },
     "dependencies": {
         "@bem-react/classname": "^1.5.12",

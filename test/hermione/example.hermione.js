@@ -2,6 +2,7 @@ const { assert } = require('chai');
 
 describe('github', async function() {
     it('Тест, который пройдет', async function() {
+        // await this.browser.setWindowSize(1920, 1080);
         await this.browser.url('https://github.com/gemini-testing/hermione');
         await this.browser.assertView('plain', '#readme', {
             compositeImage: true,
