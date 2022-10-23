@@ -160,8 +160,6 @@ describe('Тестирование приложения', () => {
                     name: /shopping cart/i
                 })
 
-                console.log(cartTittle.innerHTML)
-
                 expect(cartTittle.innerHTML).toEqual('Shopping cart')
             });
         });
@@ -188,6 +186,7 @@ describe('Тестирование приложения', () => {
                       }
                     },
                     cart: {
+                        0: {id: 0, name: 'car', price: 771, count: 1}
                     },
                     latestOrderId: 0
                 }
@@ -236,6 +235,13 @@ describe('Тестирование приложения', () => {
                 expect(cardName.innerHTML).toEqual('$771')
             });
 
+            it('Товар уже есть в корзине', () => {
+
+                const text = screen.getByText(/item in cart/i)
+
+                expect(text.innerHTML).toEqual('Item in cart')
+            });
+
             describe('Проверка внутренностей карточек', () => {
                 beforeEach(() => {
                     const link = screen.getByRole('link', { name: /details/i })
@@ -266,6 +272,11 @@ describe('Тестирование приложения', () => {
                     expect(node.innerHTML).toEqual('metal')
                 });
 
+                it('Надпись, что товар уже добавлен в корзину', () => {
+                    const text = screen.getByText(/item in cart/i)
+
+                    expect(text.innerHTML).toEqual('Item in cart')
+                })
                 // it('Проверка на добавление в корзину', () => {
                 //     const addToCartButton = screen.getByRole('button', {
                 //         name: /add to cart/i
@@ -289,6 +300,68 @@ describe('Тестирование приложения', () => {
     });
 
     describe('Проверка корзины', () => {
+
+        describe('Проверка корзины без товаров', () => {
+
+            beforeEach(() => {
+                // const api = new ExampleApi('/');
+                // const api = new MockExampleApi()
+                // const cart = new CartApi();
+                // const store = initStore(api, cart);
+                const store = mockStore(
+                    {
+                        products: [],
+                        details: {
+                        },
+                        cart: {
+                        },
+                        latestOrderId: 0
+                    }
+                )
+
+                render(
+                    <BrowserRouter basename={'/'}>
+                        <Provider store={store}>
+                            <Application />
+                        </Provider>
+                    </BrowserRouter>
+                )
+
+                const navButton = screen.getByRole('link', {
+                    name: /cart/i
+                })
+
+                navButton.click()
+            })
+
+            describe('Проверка надписи призывающей перейти в каталог', () => {
+                it('Надпись существует', () => {
+
+                    const text = screen.getByText(/cart is empty\. please select products in the \./i)
+
+                    expect(text.innerHTML).toBeTruthy()
+                });
+
+                it('По клику переходит', () => {
+
+                    const view = screen.getByText(
+                        /cart is empty\. please select products in the \./i);
+
+                    const catalogButton = within(view).getByRole('link', {
+                        name: /catalog/i
+                    });
+
+                    catalogButton.click()
+
+                    const catalogTittle = screen.getByRole('heading', {
+                        name: /catalog/i
+                    })
+
+                    expect(catalogTittle.innerHTML).toEqual('Catalog')
+                });
+            });
+
+        });
 
         describe('Проверка c одним айтемом в корзине', () => {
 
