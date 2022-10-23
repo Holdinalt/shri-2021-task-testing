@@ -11,6 +11,7 @@ const bem = cn('Catalog');
 export const Catalog: React.FC = () => {
     const dispatch = useDispatch();
     const products = useSelector((s: ApplicationState) => s.products);
+    // console.log(products, 'catalog')
 
     useEffect(() => {
         dispatch(productsLoad())
