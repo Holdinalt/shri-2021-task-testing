@@ -48,6 +48,7 @@
         "@types/react-router-dom": "^5.3.1",
         "@types/webpack": "^5.28.0",
         "css-loader": "^6.3.0",
+        "html-reporter": "^9.3.1",
         "html-webpack-plugin": "^5.3.2",
         "jest": "^27.3.0",
         "mini-css-extract-plugin": "^2.4.2",
