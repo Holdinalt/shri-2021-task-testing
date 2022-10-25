@@ -1,7 +1,8 @@
 const { assert } = require('chai');
 
-describe('', () => {
-    it('', () => {
+
+describe('', async function() {
+    it('', async function() {
 
     })
 })
@@ -19,43 +20,105 @@ describe('', () => {
 //     });
 // });
 
-describe('Проверка навигации', async function() {
-    it('Проверка существования "Бургера"', async function()  {
-        await this.browser.setWindowSize(420, 900);
-        await this.browser.url('http://localhost:3000/hw/store/');
+describe('Проверка приложения', async function() {
 
-        await this.browser.assertView('plain', '.navbar', {
-            compositeImage: true,
-            allowViewportOverflow: true,
-        });
+    describe('Проверка навигации', async function() {
+
+        beforeEach(async function(){
+            await this.browser.setWindowSize(420, 900);
+            await this.browser.url('http://localhost:3000/hw/store/');
+        })
+
+        it('Проверка существования "Бургера"', async function()  {
+            await this.browser.assertView('plain', '.navbar', {
+                compositeImage: true,
+                allowViewportOverflow: true,
+            });
+        })
+
+        it('Проверка открытия "Бургера"', async function()  {
+
+            const button = await this.browser.$('.navbar-toggler')
+            await button.click()
+
+            await this.browser.assertView('plain', '.navbar', {
+                compositeImage: true,
+                allowViewportOverflow: true,
+            });
+        })
+
+        it('Проверка закрытия бургера "Бургера" при выборе', async function()  {
+
+            const button = await this.browser.$('.navbar-toggler')
+            await button.click()
+
+            const buttonCatalog = await this.browser.$('.nav-link')
+            await buttonCatalog.click()
+
+            await this.browser.assertView('plain', '.navbar', {
+                compositeImage: true,
+                allowViewportOverflow: true,
+            });
+        })
     })
 
-    it('Проверка открытия "Бургера"', async function()  {
-        await this.browser.setWindowSize(420, 900);
-        await this.browser.url('http://localhost:3000/hw/store/');
+    describe('Проверка корзины', function() {
 
-        const button = await this.browser.$('.navbar-toggler')
-        await button.click()
+        let productName;
 
-        await this.browser.assertView('plain', '.navbar', {
-            compositeImage: true,
-            allowViewportOverflow: true,
-        });
-    })
+        beforeEach(async function(){
+            await this.browser.setWindowSize(700, 700);
+            await this.browser.url('http://localhost:3000/hw/store/catalog/0');
 
-    it('Проверка закрытия бургера "Бургера" при выборе', async function()  {
-        await this.browser.setWindowSize(420, 900);
-        await this.browser.url('http://localhost:3000/hw/store/');
+            productName = await this.browser.$('.ProductDetails-Name').getText();
 
-        const button = await this.browser.$('.navbar-toggler')
-        await button.click()
+            const buttonAddToCart = await this.browser.$('.ProductDetails-AddToCart');
+            await buttonAddToCart.click()
+        })
 
-        const buttonCatalog = await this.browser.$('.nav-link')
-        await buttonCatalog.click()
+        it('Проверка добавления в корзину', async function() {
+            await this.browser.url('http://localhost:3000/hw/store/cart');
 
-        await this.browser.assertView('plain', '.navbar', {
-            compositeImage: true,
-            allowViewportOverflow: true,
-        });
+            const title = await this.browser.$('.Cart-Name').getText();
+            assert.equal(title, productName);
+
+
+            // await this.browser.assertView('plain', '.Cart', {
+            //     captureElementFromTop: false,
+            //     screenshotDelay: 1000,
+            //     allowViewportOverflow: true,
+            //     tolerance: 5,
+            //     compositeImage: true,
+            //     ignoreElements: [
+            //         '.Cart-Table'
+            //     ]
+            // });
+        })
+
+        it('Проверка очистки корзины', async function() {
+            await this.browser.url('http://localhost:3000/hw/store/cart');
+
+            const cartClear = await this.browser.$('.Cart-Clear');
+            cartClear.click()
+
+            const title = await this.browser.$('.col').getText();
+            assert.equal(title, 'Shopping cart\nCart is empty. Please select products in the catalog.');
+        })
+
+        it('Проверка повторного добавления', async function() {
+            await this.browser.setWindowSize(700, 700);
+            await this.browser.url('http://localhost:3000/hw/store/catalog/0');
+
+            productName = await this.browser.$('.ProductDetails-Name').getText();
+
+            const buttonAddToCart = await this.browser.$('.ProductDetails-AddToCart');
+            await buttonAddToCart.click()
+
+            await this.browser.url('http://localhost:3000/hw/store/cart');
+
+            const title = await this.browser.$('.Cart-Count').getText();
+            assert.equal(title, '2');
+
+        })
     })
 })
